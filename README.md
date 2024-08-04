@@ -23,6 +23,7 @@ Open the terminal and type the following:
 
 - npm i --save express
 - npm i pg
+- npm i cors
 
 **Step 3:** Run the server.
 
