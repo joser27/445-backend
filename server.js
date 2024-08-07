@@ -1,5 +1,5 @@
 const express = require('express');
-const studentRoutes = require('./src/student/routes');
+const routes = require('./src/game/routes');
 const app = express();
 const port = 5000;
 const cors = require('cors');
@@ -11,6 +11,6 @@ app.get("/", (req, res) => {
     res.send("Hello world!");
 });
 
-app.use('/api/v1/students', studentRoutes);
+app.use('/api/', routes);
 
 app.listen(port, () => console.log(`app listening on port ${port}`));
