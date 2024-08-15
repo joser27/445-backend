@@ -29,4 +29,4 @@ Open the terminal and type the following:
 
 node .\server.js
 
-Now, open localhost:3000 on your browser to view the application
+Now, open localhost:5000 on your browser to view the application

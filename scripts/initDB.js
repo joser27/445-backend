@@ -41,67 +41,41 @@ async function createTables() {
     });
 
     const createTablesQuery = `
+    -- 1. Developer_Profile: Store data about game developers.
+    CREATE TABLE IF NOT EXISTS Developer_Profile (
+        dev_id SERIAL PRIMARY KEY,
+        dev_name VARCHAR(100),
+        dev_info VARCHAR(255),
+        date_joined DATE
+    );
+
+    -- 2. User_Profile: Store data about the users.
     CREATE TABLE IF NOT EXISTS User_Profile (
         user_id SERIAL PRIMARY KEY,
-        login_credentials VARCHAR(255) NOT NULL,
-        payment_info VARCHAR(255),
-        game_library TEXT,
-        friend_list TEXT,
+        username VARCHAR(100) NOT NULL,
+        password VARCHAR(100) NOT NULL,
+        payment_info VARCHAR(100),
         status VARCHAR(50),
         age INT
     );
 
+    -- 3. Game_Information: Store data about games.
     CREATE TABLE IF NOT EXISTS Game_Information (
         game_id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
+        name VARCHAR(100) NOT NULL,
         dev_id INT NOT NULL,
-        genre VARCHAR(100),
-        price DECIMAL(10, 2),
-        release_info DATE,
-        rating DECIMAL(2, 1),
-        age_restrictions INT
+        genre VARCHAR(50) NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        release_info VARCHAR(255),
+        rating DECIMAL(2,1) NOT NULL,
+        age_restrictions INT NOT NULL,
+        FOREIGN KEY (dev_id) REFERENCES Developer_Profile(dev_id)
     );
 
-    CREATE TABLE IF NOT EXISTS Developer_Profile (
-        dev_id SERIAL PRIMARY KEY,
-        dev_name VARCHAR(255) NOT NULL,
-        dev_info TEXT,
-        date_joined DATE
-    );
-
-    CREATE TABLE IF NOT EXISTS Wishlist (
-        wish_id SERIAL PRIMARY KEY,
-        user_id INT NOT NULL,
-        game_id INT NOT NULL,
-        date_added DATE NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE,
-        FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS Purchase (
-        user_id INT NOT NULL,
-        game_id INT NOT NULL,
-        purchase_date DATE NOT NULL,
-        price DECIMAL(10, 2) NOT NULL,
-        PRIMARY KEY (user_id, game_id, purchase_date),
-        FOREIGN KEY (user_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE,
-        FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS Review (
-        rev_id SERIAL PRIMARY KEY,
-        game_id INT NOT NULL,
-        user_id INT NOT NULL,
-        rev_rating DECIMAL(2, 1) NOT NULL CHECK (rev_rating >= 0 AND rev_rating <= 10),
-        rev_text TEXT,
-        rev_date DATE NOT NULL,
-        FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE,
-        FOREIGN KEY (user_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE
-    );
-
+    -- 4. User_Activity: Store data about the users' activity.
     CREATE TABLE IF NOT EXISTS User_Activity (
         user_id INT NOT NULL,
-        game_id INT NOT NULL,
+        game_id INT NOT NULL, 
         time_played INT NOT NULL,
         last_played DATE NOT NULL,
         PRIMARY KEY (user_id, game_id),
@@ -109,6 +83,7 @@ async function createTables() {
         FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE
     );
 
+    -- 5. Friend: Store the data about friends.
     CREATE TABLE IF NOT EXISTS Friend (
         user_id INT NOT NULL,
         friend_id INT NOT NULL,
@@ -119,16 +94,48 @@ async function createTables() {
         FOREIGN KEY (friend_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE
     );
 
+    -- 6. Achievement: Store data about the achievements.
     CREATE TABLE IF NOT EXISTS Achievement (
         achv_id SERIAL PRIMARY KEY,
         game_id INT NOT NULL,
-        achv_name VARCHAR(255) NOT NULL,
-        achv_desc TEXT,
+        achv_name VARCHAR(100) NOT NULL,
+        achv_desc VARCHAR(255),
         FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE
     );
-    `;
 
-    
+    -- 7. Wishlist: Store data about the wishlist.
+    CREATE TABLE IF NOT EXISTS Wishlist (
+        wish_id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        game_id INT NOT NULL,
+        date_added DATE NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE
+    );
+
+    -- 8. Purchase: Store data about user purchases.
+    CREATE TABLE IF NOT EXISTS Purchase (
+        user_id INT NOT NULL,
+        game_id INT NOT NULL,
+        purchase_date DATE NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        PRIMARY KEY (user_id, game_id, purchase_date),
+        FOREIGN KEY (user_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE
+    );
+
+    -- 9. Review: Store data about user reviews on games.
+    CREATE TABLE IF NOT EXISTS Review (
+        rev_id SERIAL PRIMARY KEY,
+        game_id INT NOT NULL,
+        user_id INT NOT NULL,
+        rev_rating DECIMAL(2, 1) NOT NULL CHECK (rev_rating >= 0 AND rev_rating <= 10),
+        rev_text TEXT,
+        rev_date DATE NOT NULL,
+        FOREIGN KEY (game_id) REFERENCES Game_Information(game_id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES User_Profile(user_id) ON DELETE CASCADE
+    );
+    `;
 
     try {
         await pool.query(createTablesQuery);

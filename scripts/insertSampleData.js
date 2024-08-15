@@ -23,26 +23,27 @@ const insertData = async () => {
 
         // Insert sample data into User_Profile
         await client.query(`
-            INSERT INTO User_Profile (login_credentials, payment_info, game_library, friend_list, status, age) VALUES
-            ('user1@example.com', 'card1', '1,2,3', '2,3', 'online', 25),
-            ('user2@example.com', 'card2', '2,3,4', '1,3', 'offline', 30),
-            ('user3@example.com', 'card3', '1,4', '1,2', 'online', 22),
-            ('alice.smith@example.com', 'card4', '2,3,5', '4,5', 'online', 25),
-            ('bob.johnson@example.com', 'card5', '1,3,6', '3,4', 'offline', 30),
-            ('charlie.brown@example.com', 'card6', '4,5,6', '1,6', 'online', 22),
-            ('david.wilson@example.com', 'card7', '2,4,7', '2,5', 'online', 27),
-            ('eva.davis@example.com', 'card8', '1,5,8', '1,6', 'offline', 29),
-            ('frank.miller@example.com', 'card9', '3,6,7', '3,5', 'online', 31),
-            ('grace.lee@example.com', 'card10', '2,4,8', '2,4', 'offline', 28),
-            ('hannah.clark@example.com', 'card11', '1,3,7', '1,5', 'online', 26),
-            ('ian.scott@example.com', 'card12', '3,5,8', '3,4', 'online', 24),
-            ('julia.adams@example.com', 'card13', '2,6,7', '2,3', 'offline', 32);
+            INSERT INTO User_Profile (username, password, payment_info, status, age) VALUES
+            ('user1', 'password1', 'card1', 'online', 25),
+            ('user2', 'password2', 'card2', 'offline', 30),
+            ('user3', 'password3', 'card3', 'online', 22),
+            ('alice.smith', 'password4', 'card4', 'online', 25),
+            ('bob.johnson', 'password5', 'card5', 'offline', 30),
+            ('charlie.brown', 'password6', 'card6', 'online', 22),
+            ('david.wilson', 'password7', 'card7', 'online', 27),
+            ('eva.davis', 'password8', 'card8', 'offline', 29),
+            ('frank.miller', 'password9', 'card9', 'online', 31),
+            ('grace.lee', 'password10', 'card10', 'offline', 28),
+            ('hannah.clark', 'password11', 'card11', 'online', 26),
+            ('ian.scott', 'password12', 'card12', 'online', 24),
+            ('julia.adams', 'password13', 'card13', 'offline', 32);
         `);
 
         // Insert sample data into Game_Information
         await client.query(`
             INSERT INTO Game_Information (name, dev_id, genre, price, release_info, rating, age_restrictions) VALUES
             ('Epic Quest', 1, 'RPG', 59.99, '2023-06-15', 8.7, 12),
+            ('Arena Shooter', 1, 'Shooter', 19.99, '2023-02-15', 6.1, 18),
             ('Space Adventure', 2, 'Sci-Fi', 49.99, '2024-01-20', 9.2, 10),
             ('Mystery Manor', 3, 'Puzzle', 29.99, '2022-11-05', 7.5, 8),
             ('Race Masters', 4, 'Racing', 39.99, '2023-09-10', 8.3, 10),
@@ -91,21 +92,48 @@ const insertData = async () => {
             INSERT INTO Friend (user_id, friend_id, date_added, status) VALUES
             (1, 2, '2024-01-10', 'accepted'),
             (1, 3, '2024-02-15', 'accepted'),
+            (1, 4, '2024-02-20', 'accepted'),
+            (1, 5, '2024-03-01', 'accepted'),
+            (1, 6, '2024-03-10', 'accepted'),
+            (1, 7, '2024-03-15', 'accepted'),
             (2, 1, '2024-01-10', 'accepted'),
             (2, 3, '2024-03-20', 'accepted'),
+            (2, 4, '2024-04-01', 'accepted'),
+            (2, 5, '2024-04-05', 'accepted'),
             (3, 1, '2024-02-15', 'accepted'),
             (3, 2, '2024-03-20', 'accepted'),
+            (3, 6, '2024-05-10', 'accepted'),
+            (3, 7, '2024-05-15', 'accepted'),
             (4, 5, '2024-04-25', 'accepted'),
+            (4, 6, '2024-05-01', 'accepted'),
+            (4, 8, '2024-05-10', 'accepted'),
             (5, 4, '2024-04-25', 'accepted'),
+            (5, 7, '2024-05-20', 'accepted'),
+            (5, 8, '2024-05-25', 'accepted'),
             (6, 7, '2024-05-30', 'accepted'),
+            (6, 9, '2024-06-01', 'accepted'),
             (7, 6, '2024-05-30', 'accepted'),
+            (7, 9, '2024-06-05', 'accepted'),
             (8, 9, '2024-06-10', 'accepted'),
+            (8, 10, '2024-06-15', 'accepted'),
+            (8, 11, '2024-06-20', 'accepted'),
             (9, 8, '2024-06-10', 'accepted'),
+            (9, 10, '2024-06-25', 'accepted'),
+            (9, 11, '2024-06-30', 'accepted'),
             (10, 11, '2024-07-05', 'pending'),
+            (10, 12, '2024-07-08', 'accepted'),
+            (10, 13, '2024-07-10', 'accepted'),
             (11, 10, '2024-07-05', 'pending'),
+            (11, 12, '2024-07-12', 'accepted'),
+            (11, 13, '2024-07-15', 'accepted'),
             (12, 13, '2024-07-12', 'accepted'),
-            (13, 12, '2024-07-12', 'accepted');
+            (12, 1, '2024-07-18', 'accepted'),
+            (12, 2, '2024-07-20', 'accepted'),
+            (13, 12, '2024-07-12', 'accepted'),
+            (13, 3, '2024-07-22', 'accepted'),
+            (13, 4, '2024-07-24', 'accepted');
         `);
+
 
         // Insert sample data into Achievement
         await client.query(`

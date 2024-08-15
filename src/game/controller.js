@@ -1,41 +1,68 @@
 const pool = require('../../db');
 const queries = require('./queries');
 
-const setup = (req, res) => {
-    pool.query(queries.sqlScript, (error, results) => {
-        if (error) {
-            console.error('Error setting up database:', error);
-            res.status(500).send('Database setup failed');
-        } else {
-            res.status(200).send('Database setup completed successfully');
-        }
-    });
-};
 
-const getAchievements = (req, res) => {
-    pool.query('SELECT * FROM Achievement', (error, results) => {
+
+const getMutualFriends = (req, res) => {
+    const { username1, username2 } = req.query;
+
+    if (!username1 || !username2) {
+        return res.status(400).send('Both usernames are required');
+    }
+
+    pool.query(queries.getMutualFriendsQuery, [username1, username2], (error, results) => {
         if (error) {
-            console.error('Error retrieving achievements:', error);
-            res.status(500).send('Failed to retrieve achievements');
+            console.error('Error retrieving mutual friends:', error);
+            res.status(500).send('Failed to retrieve mutual friends');
         } else {
             res.status(200).json(results.rows);
         }
     });
 };
 
-const getDeveloperProfile = (req, res) => {
-    pool.query('SELECT * FROM Developer_Profile', (error, results) => {
+const getTopPurchasedGames = (req, res) => {
+    const { minPrice, maxPrice } = req.query;
+
+    if (!minPrice || !maxPrice) {
+        return res.status(400).send('Both minPrice and maxPrice are required');
+    }
+
+    pool.query(queries.getTopPurchasedGamesQuery, [minPrice, maxPrice], (error, results) => {
         if (error) {
-            console.error('Error retrieving developer profiles:', error);
-            res.status(500).send('Failed to retrieve developer profiles');
+            console.error('Error retrieving top purchased games:', error);
+            res.status(500).send('Failed to retrieve top purchased games');
         } else {
             res.status(200).json(results.rows);
         }
     });
 };
 
-const getGames = (req, res) => {
-    pool.query(queries.getGames, (error, results) => {
+const getDevPages = (req, res) => {
+    const { devName } = req.query;
+
+    if (!devName) {
+        return res.status(400).send('Developer name is required');
+    }
+
+    pool.query(queries.getDevPagesQuery, [devName], (error, results) => {
+        if (error) {
+            console.error('Error retrieving developer pages:', error);
+            res.status(500).send('Failed to retrieve developer pages');
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+};
+
+const getGame = (req, res) => {
+    const { minPrice, maxPrice, minRating, genre, ageRestrictionToggle } = req.query;
+
+    // Validate input
+    if (!minPrice || !maxPrice || !minRating || !genre || ageRestrictionToggle === undefined) {
+        return res.status(400).send('All parameters (minPrice, maxPrice, minRating, genre, ageRestrictionToggle) are required');
+    }
+
+    pool.query(queries.getGamesQuery, [minPrice, maxPrice, minRating, genre, ageRestrictionToggle], (error, results) => {
         if (error) {
             console.error('Error retrieving games:', error);
             res.status(500).send('Failed to retrieve games');
@@ -45,81 +72,9 @@ const getGames = (req, res) => {
     });
 };
 
-const getPurchases = (req, res) => {
-    pool.query('SELECT * FROM Purchase', (error, results) => {
-        if (error) {
-            console.error('Error retrieving purchases:', error);
-            res.status(500).send('Failed to retrieve purchases');
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
-};
-
-const getReviews = (req, res) => {
-    pool.query('SELECT * FROM Review', (error, results) => {
-        if (error) {
-            console.error('Error retrieving reviews:', error);
-            res.status(500).send('Failed to retrieve reviews');
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
-};
-
-const getUserActivity = (req, res) => {
-    pool.query('SELECT * FROM User_Activity', (error, results) => {
-        if (error) {
-            console.error('Error retrieving user activity:', error);
-            res.status(500).send('Failed to retrieve user activity');
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
-};
-
-const getFriends = (req, res) => {
-    pool.query('SELECT * FROM Friend', (error, results) => {
-        if (error) {
-            console.error('Error retrieving friends:', error);
-            res.status(500).send('Failed to retrieve friends');
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
-};
-
-const getWishlist = (req, res) => {
-    pool.query('SELECT * FROM Wishlist', (error, results) => {
-        if (error) {
-            console.error('Error retrieving wishlist:', error);
-            res.status(500).send('Failed to retrieve wishlist');
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
-};
-
-const getUsers = (req, res) => {
-    pool.query('SELECT * FROM User_Profile', (error, results) => {
-        if (error) {
-            console.error('Error retrieving users:', error);
-            res.status(500).send('Failed to retrieve users');
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
-};
-
 module.exports = {
-    setup,
-    getAchievements,
-    getDeveloperProfile,
-    getGames,
-    getPurchases,
-    getReviews,
-    getUserActivity,
-    getFriends,
-    getWishlist,
-    getUsers
+    getDevPages,
+    getTopPurchasedGames,
+    getMutualFriends,
+    getGame,
 };
